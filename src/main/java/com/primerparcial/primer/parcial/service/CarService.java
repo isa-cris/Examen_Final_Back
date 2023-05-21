@@ -10,7 +10,7 @@ public interface CarService {
     Car getCar(Long id);
     List<Car> getAllCars();
     Boolean updateCar(Car car, Long id);
-
     Boolean deleteCar(Long id, Car car);
+    String login (Car car);
 
 }

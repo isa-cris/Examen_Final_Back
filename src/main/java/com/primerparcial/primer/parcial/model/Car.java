@@ -14,7 +14,10 @@ public class Car {
     private String car_model;
     private String car_color;
     private String car_model_year;
+
+    @Column(unique = true) //valores unicos
     private String car_vin;
+
     private String price;
     private String availability;
 }

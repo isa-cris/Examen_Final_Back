@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.primerparcial.primer-parcial.main.iml" filepath="$PROJECT_DIR$/.idea/modules/com.primerparcial.primer-parcial.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/primer-parcial.iml" filepath="$PROJECT_DIR$/.idea/modules/primer-parcial.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/primer-parcial.test.iml" filepath="$PROJECT_DIR$/.idea/modules/primer-parcial.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/primer-parcial.main.iml" filepath="$PROJECT_DIR$/.idea/modules/primer-parcial.main.iml" />
     </modules>
   </component>
 </project>

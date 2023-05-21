@@ -3,16 +3,21 @@ package com.primerparcial.primer.parcial.service;
 import com.primerparcial.primer.parcial.model.Car;
 import com.primerparcial.primer.parcial.repository.CarRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CarServiceImp implements CarService{
+public class CarServiceImp implements CarService {
 
+    @Autowired
     private final CarRepository carRepository;
+
 
     @Override
     public Boolean createCar(Car car){
@@ -77,5 +82,11 @@ public class CarServiceImp implements CarService{
             return false;
         }
     }
+
+    @Override
+    public String login(Car car) {
+        return null;
+    }
+
 
 }

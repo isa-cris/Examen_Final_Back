@@ -3,6 +3,8 @@ package com.primerparcial.primer.parcial.controller;
 import com.primerparcial.primer.parcial.model.Car;
 import com.primerparcial.primer.parcial.service.CarService;
 import com.primerparcial.primer.parcial.service.CarServiceImp;
+import com.primerparcial.primer.parcial.utils.ApiResponse;
+import com.primerparcial.primer.parcial.utils.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,9 @@ public class CarController {
 
     @Autowired
     private final CarServiceImp carServiceImp;
+    private CarService carService;
+    private ApiResponse apiResponse;
+
 
     @PostMapping(value = "/car")
     public ResponseEntity saveCar(@RequestBody Car car){
@@ -26,12 +31,10 @@ public class CarController {
         Boolean carResp = carServiceImp.createCar(car);
 
         if (carResp == true) {
-            response.put("status","201");
-            response.put("massage","se creo el vehiculo");
-            return new ResponseEntity(response, HttpStatus.ACCEPTED);
+            apiResponse = new ApiResponse(Constants.REGISTER_CREATED, "");
+            return new ResponseEntity(response, HttpStatus.CREATED);
         }
-        response.put("status","400");
-        response.put("massege","Hubo un error al crear el vehiculo");
+        apiResponse = new ApiResponse(Constants.REGISTER_BAD,"");
         return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -51,10 +54,10 @@ public class CarController {
     public ResponseEntity<List> getAllCars(){
         Map response = new HashMap();
         try{
-            return new ResponseEntity(carServiceImp.getAllCars(), HttpStatus.OK);
+            apiResponse =new ApiResponse(Constants.REGISTER_LIST,carServiceImp.getAllCars() );
+            return new ResponseEntity(HttpStatus.OK);
         }catch (Exception e){
-            response.put("status","404");
-            response.put("message","nese encontro el vehiculo");
+            apiResponse = new ApiResponse( Constants.REGISTER_NOT_FOUND,"");
             return new ResponseEntity(response, HttpStatus.MULTI_STATUS);
         }
     }
@@ -65,17 +68,14 @@ public class CarController {
         Boolean carDB = carServiceImp.updateCar(car, id);
         try {
             if (carDB == null) {
-                response.put("status", "201");
-                response.put("massage", "No se encontro vehiculo");
+                apiResponse = new ApiResponse( Constants.REGISTER_NOT_FOUND,"");
                 return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
             }
-            response.put("status", "201");
-            response.put("massage", "se actualizo el vehiculo");
-            return new ResponseEntity(response, HttpStatus.ACCEPTED);
+            apiResponse =new ApiResponse(Constants.REGISTER_UPDATED, carService.getCar(id));
+            return new ResponseEntity(apiResponse, HttpStatus.ACCEPTED);
         } catch (Exception e) {
-            response.put("status", "201");
-            response.put("massage", "No se actualizo el vehiculo");
-            return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+            apiResponse= new ApiResponse(Constants.REGISTER_BAD, car);
+            return new ResponseEntity(apiResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -85,17 +85,14 @@ public class CarController {
         Boolean carDB = carServiceImp.deleteCar(id, car);
         try{
             if (carDB == null){
-                response.put("status", "400");
-                response.put("massage", "No encontro vehiculo");
-                return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+                apiResponse = new ApiResponse( Constants.REGISTER_NOT_FOUND,"");
+                return new ResponseEntity(apiResponse, HttpStatus.BAD_REQUEST);
             }else {
-                response.put("status", "201");
-                response.put("massage", "se elimino el vehiculo");
+                apiResponse =new ApiResponse(Constants.DELETE_CAR, carService.deleteCar(id, car));
                 return new ResponseEntity(response, HttpStatus.ACCEPTED);
             }
         } catch (Exception e) {
-            response.put("status", "404");
-            response.put("massage", "Error con la eliminacion");
+            apiResponse= new ApiResponse(Constants.REGISTER_BAD, car);
             return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
         }
     }

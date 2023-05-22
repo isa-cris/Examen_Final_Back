@@ -24,16 +24,4 @@ public class AuthController {
     private ApiResponse apiResponse;
     Map data= new HashMap<>();
 
-    @PostMapping(value = "/login")
-    public ResponseEntity login (@RequestBody Car car) {
-
-        try {
-            data.put("token", carService.login(car));
-            apiResponse = new ApiResponse(Constants.CAR_LOGIN, data);
-            return new ResponseEntity(apiResponse, HttpStatus.OK);
-        } catch (Exception e) {
-            apiResponse = new ApiResponse(e.getMessage(), "");
-            return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
-        }
-    }
 }

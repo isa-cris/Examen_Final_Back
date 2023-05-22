@@ -82,11 +82,4 @@ public class CarServiceImp implements CarService {
             return false;
         }
     }
-
-    @Override
-    public String login(Car car) {
-        return null;
-    }
-
-
 }

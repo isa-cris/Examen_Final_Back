@@ -29,6 +29,11 @@ public class CarController {
     public ResponseEntity saveCar(@RequestBody Car car){
         Map response = new HashMap();
         Boolean carResp = carServiceImp.createCar(car);
+        Car existingCar = carServiceImp.getCar(car.getId());
+        if (existingCar != null) {
+            apiResponse = new ApiResponse(Constants.REGISTER_BAD, "El Id ya existe");
+            return new ResponseEntity(apiResponse,HttpStatus.BAD_REQUEST);
+        }
 
         if (carResp == true) {
             apiResponse = new ApiResponse(Constants.REGISTER_CREATED, "");

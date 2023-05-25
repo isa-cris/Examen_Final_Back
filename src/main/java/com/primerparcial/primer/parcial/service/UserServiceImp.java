@@ -25,7 +25,7 @@ public class UserServiceImp implements UserService {
     @Autowired
     private CarService carService;
     @Autowired
-    private JWTUtil jwtutil;
+    private JWTUtil jwtUtil;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -51,7 +51,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public Boolean updateUser(Long user_id, User user) {
-        try{
+        try {
             User userBD = userRepository.findById(user_id).get();
             userBD.setFirstName(user.getFirstName());
             userBD.setLastName(user.getLastName());
@@ -60,22 +60,11 @@ public class UserServiceImp implements UserService {
             userBD.setPassword(passwordEncoder.encode(user.getPassword()));
             User userUp = userRepository.save(userBD);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
-    @PostMapping(value = "auth/login")
-    public String login(User user) {
-        Optional<User> userBd = userRepository.findByEmail(user.getEmail());
-        if (userBd.isEmpty()){
-            throw new RuntimeException("Usuario no encontrado");
-        }
-        if (!passwordEncoder.matches(user.getPassword(),userBd.get().getPassword())){
-            throw new RuntimeException("La contraseña es incorecta");
-        }
-        return jwtutil.create(String.valueOf(userBd.get().getUser_id()),
-                String.valueOf(userBd.get().getEmail()));
-    }
+
 
     public Boolean deleteUser(Long user_id, User user) {
         try {
@@ -88,6 +77,19 @@ public class UserServiceImp implements UserService {
         }catch (Exception e){
             return false;
         }
+    }
+
+    @Override
+    public String login(User user) {
+        Optional <User> userdb = userRepository.findByEmail(user.getEmail());
+        if (userdb.isEmpty()){
+            throw new RuntimeException("Usuario no encontrado");
+        }
+        if (!passwordEncoder.matches(user.getPassword(),userdb.get().getPassword())){
+            throw new RuntimeException("La contraseña es incorrecta");
+        }
+        return jwtUtil.create(String.valueOf(userdb.get().getUser_id()),
+                String.valueOf(userdb.get().getEmail()));
     }
 
     @Override

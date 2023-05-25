@@ -5,7 +5,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.primerparcial.primer.parcial.dto.CarDTO;
 import com.primerparcial.primer.parcial.model.Car;
+import com.primerparcial.primer.parcial.model.User;
 import com.primerparcial.primer.parcial.repository.CarRepository;
+import com.primerparcial.primer.parcial.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -16,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +26,8 @@ public class
 RestCarServiceImp {
     private final RestTemplate restTemplate;
     private final CarRepository carRepository;
+    private final UserRepository userRepository;
+
 
     public Object getById(Long id) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
@@ -45,7 +50,7 @@ RestCarServiceImp {
 
     }
 
-    public Object saveCar(Long id) throws JsonProcessingException{
+    public Object saveCar(Long id, Long user_id) throws JsonProcessingException{
 
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -61,14 +66,27 @@ RestCarServiceImp {
                 p=false;
             }
         }
-        if(p==true) {
+        if(p) {
             try {
-                Car carSave = carRepository.save(carDTO);
-                return carDTO;
+                // Obtener el usuario correspondiente al user_id
+                User user = userRepository.findById(user_id).orElse(null);
+
+                if (user != null) {
+                    // Establecer la relación entre el carro y el usuario
+                    carDTO.setUser(user);
+
+                    // Guardar el carro en la base de datos
+                    Car carSave = carRepository.save(carDTO);
+
+                    return carDTO;
+                } else {
+                    return "El usuario con el ID proporcionado no existe.";
+                }
             } catch (Exception e) {
                 return false;
             }
         }
         return false;
     }
+
 }

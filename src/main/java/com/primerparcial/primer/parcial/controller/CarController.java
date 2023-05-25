@@ -76,19 +76,19 @@ public class CarController {
         }
     }
 
-    @GetMapping(value = "/cars")
+    @GetMapping(value = "")
     public ResponseEntity<List> getAllCars(@RequestHeader(value = "Authorization") String token) {
-        Map response = new HashMap();
+
         System.out.println(token);
         try {
             if (!validateToken(token)) {
                 return new ResponseEntity("Token invalido", HttpStatus.UNAUTHORIZED);
             }
                 apiResponse = new ApiResponse(Constants.REGISTER_LIST, carServiceImp.getAllCars());
-                return new ResponseEntity(HttpStatus.OK);
+                return new ResponseEntity(apiResponse, HttpStatus.OK);
             } catch (Exception e) {
                 apiResponse = new ApiResponse(Constants.REGISTER_NOT_FOUND, "");
-                return new ResponseEntity(response, HttpStatus.MULTI_STATUS);
+                return new ResponseEntity(apiResponse, HttpStatus.MULTI_STATUS);
             }
         }
 

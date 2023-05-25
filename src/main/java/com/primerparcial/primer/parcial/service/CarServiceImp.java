@@ -93,6 +93,7 @@ public class CarServiceImp implements CarService {
 
     @Override
     public List<Car> getCarsByUser(User user) {
+
         return carRepository.findByUser(user);
     }
 

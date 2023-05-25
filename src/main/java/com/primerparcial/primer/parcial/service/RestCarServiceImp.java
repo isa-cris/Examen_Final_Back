@@ -19,7 +19,8 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class RestCarServiceImp {
+public class
+RestCarServiceImp {
     private final RestTemplate restTemplate;
     private final CarRepository carRepository;
 

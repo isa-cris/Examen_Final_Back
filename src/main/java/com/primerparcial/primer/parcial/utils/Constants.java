@@ -12,5 +12,6 @@ public class Constants {
     public static final String CAR_LOGIN = "usuario logueado" ;
     public static final String REGISTER_FOUND = "registro encontrado" ;
     public static final String REGISTER_LIST = "lista de registros" ;
-public static final String DELETE_CAR = "se elimino el vehiculo";
+    public static final String DELETE_CAR = "se elimino el vehiculo";
+    public static final String CAR_COUNT_FOUND = "autos registrados por el usuario :" ;
 }

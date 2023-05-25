@@ -11,8 +11,11 @@ import com.primerparcial.primer.parcial.service.UserServiceImp;
 import com.primerparcial.primer.parcial.utils.ApiResponse;
 import com.primerparcial.primer.parcial.utils.Constants;
 import org.apache.coyote.Response;
+import com.primerparcial.primer.parcial.service.CarService;
+
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -21,17 +24,37 @@ public class UserController {
     @Autowired
     private UserService userService;
     private ApiResponse apiResponse;
+    @Autowired
+    private CarService carService;
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity findUserById(@PathVariable Long id) {
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping(value = "/{user_id}")
+    public ResponseEntity findUserById(@PathVariable Long user_id) {
         try {
-            apiResponse = new ApiResponse(Constants.REGISTER_FOUND, userService.getUser(id));
-            return new ResponseEntity(apiResponse, HttpStatus.OK);
+            User user = userService.getUser(user_id);
+            if (user != null) {
+                List<Car> cars = carService.getCarsByUser(user);
+
+                Map<String, Object> response = new HashMap<>();
+                response.put("user", user);
+                response.put("cars", cars);
+
+                apiResponse = new ApiResponse(Constants.REGISTER_FOUND, response);
+                return new ResponseEntity(apiResponse, HttpStatus.OK);
+            } else {
+                apiResponse = new ApiResponse(Constants.REGISTER_NOT_FOUND, "");
+                return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
+            }
         } catch (Exception e) {
             apiResponse = new ApiResponse(Constants.REGISTER_NOT_FOUND, "");
             return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
         }
     }
+
 
     @PostMapping(value = "")
     public ResponseEntity saveUser(@RequestBody User user) {
@@ -56,16 +79,16 @@ public class UserController {
         }
     }
 
-    @PutMapping(value = "/{id}")
-    public ResponseEntity updateUser(@PathVariable Long id, @RequestBody User user) {
-        Boolean userDB = userService.updateUser(id, user);
+    @PutMapping(value = "/{user_id}")
+    public ResponseEntity updateUser(@PathVariable Long user_id, @RequestBody User user) {
+        Boolean userDB = userService.updateUser(user_id, user);
         try {
             if (userDB == null) {
                 apiResponse = new ApiResponse(Constants.REGISTER_NOT_FOUND, "");
 
                 return new ResponseEntity(apiResponse, HttpStatus.BAD_REQUEST);
             }
-            apiResponse = new ApiResponse(Constants.REGISTER_UPDATED, userService.getUser(id));
+            apiResponse = new ApiResponse(Constants.REGISTER_UPDATED, userService.getUser(user_id));
             return new ResponseEntity(apiResponse, HttpStatus.ACCEPTED);
         } catch (Exception e) {
             apiResponse = new ApiResponse(Constants.REGISTER_BAD, user);
@@ -73,16 +96,16 @@ public class UserController {
         }
     }
 
-    @DeleteMapping(value = "user/{id}")
-    public ResponseEntity deleteVehiculo(@PathVariable Long id, User user){
+    @DeleteMapping(value = "user/{user_id}")
+    public ResponseEntity deleteVehiculo(@PathVariable Long user_id, User user){
         Map response = new HashMap();
-        Boolean userDB = userService.deleteUser(id, user);
+        Boolean userDB = userService.deleteUser(user_id, user);
         try{
             if (userDB == null){
                 apiResponse = new ApiResponse( Constants.REGISTER_NOT_FOUND,"");
                 return new ResponseEntity(apiResponse, HttpStatus.BAD_REQUEST);
             }else {
-                apiResponse =new ApiResponse(Constants.DELETE_CAR, userService.deleteUser(id, user));
+                apiResponse =new ApiResponse(Constants.DELETE_CAR, userService.deleteUser(user_id, user));
                 return new ResponseEntity(response, HttpStatus.ACCEPTED);
             }
         } catch (Exception e) {
@@ -90,4 +113,17 @@ public class UserController {
             return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/{user_id}/cars/count")
+    public ResponseEntity getCarCountByUser(@PathVariable("user_id") Long userId) {
+        try {
+            int carCount = userService.getCarCountByUser(userId);
+            apiResponse = new ApiResponse(Constants.CAR_COUNT_FOUND, carCount);
+            return new ResponseEntity(apiResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            apiResponse = new ApiResponse(Constants.REGISTER_NOT_FOUND, "");
+            return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

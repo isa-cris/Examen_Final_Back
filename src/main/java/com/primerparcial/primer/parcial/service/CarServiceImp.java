@@ -47,32 +47,21 @@ public class CarServiceImp implements CarService {
     }
 
     @Override
-    public Boolean updateCar(Car car, Long id){
+    public Boolean updateCar(Car car, Long id) {
         try {
-            Car carBD = carRepository.findById(id).get();
-            List<Car> carro =carRepository.findAll();
-            boolean p=true;
-            if(carBD == null) {
-                return false;
-            }
-            for (Car car1:carro) {
-                if(car1.getCar_vin().equals(carBD.getCar_vin())){
-                    p=false;
-                }
-            }
-            if(p==true) {
-                carBD.setCar(car.getCar());
-                carBD.setCar_model(car.getCar_model());
-                carBD.setCar_color(car.getCar_color());
-                carBD.setCar_model_year(car.getCar_model_year());
-                carBD.setCar_vin(car.getCar_vin());
-                carBD.setPrice(car.getPrice());
-                carBD.setAvailability(car.getAvailability());
-                Car carUp = carRepository.save(carBD);
-                return true;
-            }
-            return false;
-        }catch (Exception e){
+            Car carDB = carRepository.findById(id).get();
+
+            carDB.setCar(car.getCar());
+            carDB.setCar_model(car.getCar_model());
+            carDB.setCar_color(car.getCar_color());
+            carDB.setCar_vin(car.getCar_vin());
+            carDB.setCar_color(car.getCar_color());
+            carDB.setCar_model_year(car.getCar_model_year());
+            carDB.setPrice(car.getPrice());
+            carDB.setAvailability(car.getAvailability());
+            Car carUp = carRepository.save(carDB);
+            return true;
+        } catch (Exception e) {
             return false;
         }
     }

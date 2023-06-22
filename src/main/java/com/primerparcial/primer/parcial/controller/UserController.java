@@ -20,6 +20,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
+@CrossOrigin
 public class UserController {
     @Autowired
     private UserService userService;
@@ -55,6 +56,29 @@ public class UserController {
         }
     }
 
+    @GetMapping(value = "/correo/{email}")
+    public ResponseEntity findUserByCorreo(@PathVariable String email ) {
+        try {
+            User user = userService.getUserCorreo(email);
+            if (user != null) {
+                List<Car> cars = carService.getCarsByUser(user);
+
+                Map<String, Object> response = new HashMap<>();
+                response.put("user", user);
+                response.put("cars", cars);
+
+                apiResponse = new ApiResponse(Constants.REGISTER_FOUND, response);
+                return new ResponseEntity(apiResponse, HttpStatus.OK);
+            } else {
+                apiResponse = new ApiResponse(Constants.REGISTER_NOT_FOUND, "");
+                return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            apiResponse = new ApiResponse(Constants.REGISTER_NOT_FOUND, "");
+            return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
+        }
+    }
+
 
     @PostMapping(value = "")
     public ResponseEntity saveUser(@RequestBody User user) {
@@ -68,14 +92,14 @@ public class UserController {
         return new ResponseEntity(apiResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping(value = "")
-    public ResponseEntity alluser() {
+    @GetMapping (value = "")
+    public ResponseEntity allUsers (){
         try {
-            apiResponse = new ApiResponse(Constants.REGISTER_LIST, userService.alluser());
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (Exception e) {
-            apiResponse = new ApiResponse(Constants.REGISTER_NOT_FOUND, "");
-            return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
+            apiResponse = new ApiResponse(Constants.REGISTER_LIST,userService.allUsers());
+            return new ResponseEntity(apiResponse, HttpStatus.OK);
+        }catch (Exception e){
+            apiResponse = new ApiResponse(Constants.REGISTER_NOT_FOUND,"");
+            return new ResponseEntity(apiResponse,HttpStatus.NOT_FOUND);
         }
     }
 
@@ -96,8 +120,8 @@ public class UserController {
         }
     }
 
-    @DeleteMapping(value = "user/{user_id}")
-    public ResponseEntity deleteVehiculo(@PathVariable Long user_id, User user){
+    @DeleteMapping(value = "/{user_id}")
+    public ResponseEntity deleteUsuario(@PathVariable Long user_id, User user){
         Map response = new HashMap();
         Boolean userDB = userService.deleteUser(user_id, user);
         try{

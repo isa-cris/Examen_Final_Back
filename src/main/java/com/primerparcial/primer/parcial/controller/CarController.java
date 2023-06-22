@@ -22,6 +22,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/car")
 @RequiredArgsConstructor
+@CrossOrigin
 public class CarController {
 
     @Autowired
@@ -36,7 +37,7 @@ public class CarController {
     private JWTUtil jwtUtil;
 
 
-    @PostMapping(value = " ")
+    @PostMapping(value = "")
     public ResponseEntity saveCar(@RequestBody Car car,@RequestHeader(value = "Authorization") String token) {
         Map response = new HashMap();
         Boolean carResp = carServiceImp.createCar(car);
@@ -57,7 +58,7 @@ public class CarController {
         return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping(value = "{id}")
+    @GetMapping(value = "/{id}")
     public ResponseEntity<?> getCar(@PathVariable Long id,@RequestHeader(value = "Authorization") String token ) {
         Car car = carService.getCar(id);
         if (!validateToken(token)) {
@@ -93,21 +94,18 @@ public class CarController {
         }
 
     @PutMapping(value = "/{id}")
-    public  ResponseEntity updateUser(@PathVariable Long id, @RequestBody Car car,@RequestHeader(value = "Authorization") String token) {
-        Map response = new HashMap();
-        Boolean carDB = carServiceImp.updateCar(car, id);
+    public ResponseEntity updateCar(@RequestBody Car car, @PathVariable Long id) {
+        Boolean carDB = carService.updateCar(car, id);
         try {
-            if (!validateToken(token)) {
-                return new ResponseEntity("Token invalido", HttpStatus.UNAUTHORIZED);
-            }
             if (carDB == null) {
-                apiResponse = new ApiResponse( Constants.REGISTER_NOT_FOUND,"");
-                return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+                apiResponse = new ApiResponse(Constants.REGISTER_NOT_FOUND, "");
+
+                return new ResponseEntity(apiResponse, HttpStatus.BAD_REQUEST);
             }
-            apiResponse =new ApiResponse(Constants.REGISTER_UPDATED, carService.getCar(id));
+            apiResponse = new ApiResponse(Constants.REGISTER_UPDATED, carService.getCar(id));
             return new ResponseEntity(apiResponse, HttpStatus.ACCEPTED);
         } catch (Exception e) {
-            apiResponse= new ApiResponse(Constants.REGISTER_BAD, car);
+            apiResponse = new ApiResponse(Constants.REGISTER_BAD, car);
             return new ResponseEntity(apiResponse, HttpStatus.BAD_REQUEST);
         }
     }

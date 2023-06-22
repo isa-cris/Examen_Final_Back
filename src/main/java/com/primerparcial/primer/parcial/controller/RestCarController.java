@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "api/cars/")
+@CrossOrigin
 public class RestCarController {
 
     private final RestCarServiceImp restCarServiceImp;

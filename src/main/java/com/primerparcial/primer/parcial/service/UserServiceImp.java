@@ -1,12 +1,12 @@
 package com.primerparcial.primer.parcial.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.primerparcial.primer.parcial.model.Car;
 import com.primerparcial.primer.parcial.repository.CarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 import com.primerparcial.primer.parcial.model.User;
 import com.primerparcial.primer.parcial.repository.UserRepository;
 import com.primerparcial.primer.parcial.utils.JWTUtil;
@@ -33,6 +33,10 @@ public class UserServiceImp implements UserService {
         return userRepository.findById(user_id).get();
     }
 
+    public User getUserCorreo(String email) throws NumberFormatException {
+        return userRepository.findByEmail(email).get();
+    }
+
    @Override
    public Boolean createUser(User user) {
        try {
@@ -43,18 +47,19 @@ public class UserServiceImp implements UserService {
            return false;
        }
    }
-
     @Override
-    public List<User> alluser() {
+    public List<User> allUsers() {
         return userRepository.findAll();
-    }//lista de todos los usuarios
+    }
 
     @Override
     public Boolean updateUser(Long user_id, User user) {
         try {
             User userBD = userRepository.findById(user_id).get();
+
             userBD.setFirstName(user.getFirstName());
             userBD.setLastName(user.getLastName());
+            userBD.setEmail(user.getEmail());
             userBD.setAddress(user.getAddress());
             userBD.setBirthday(user.getBirthday());
             userBD.setPassword(passwordEncoder.encode(user.getPassword()));

@@ -68,16 +68,11 @@ RestCarServiceImp {
         }
         if(p) {
             try {
-                // Obtener el usuario correspondiente al user_id
                 User user = userRepository.findById(user_id).orElse(null);
 
                 if (user != null) {
-                    // Establecer la relación entre el carro y el usuario
                     carDTO.setUser(user);
-
-                    // Guardar el carro en la base de datos
                     Car carSave = carRepository.save(carDTO);
-
                     return carDTO;
                 } else {
                     return "El usuario con el ID proporcionado no existe.";

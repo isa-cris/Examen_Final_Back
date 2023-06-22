@@ -6,8 +6,9 @@ import java.util.List;
 
 public interface UserService {
     User getUser(Long user_id);
+    User getUserCorreo(String email);
     Boolean createUser (User user);
-    List<User> alluser();
+    List<User> allUsers();
     Boolean updateUser(Long id, User user);
     String login (User user);
     Boolean deleteUser(Long id, User user);
